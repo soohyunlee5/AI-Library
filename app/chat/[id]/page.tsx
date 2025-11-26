@@ -1,31 +1,21 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import ChatView from "@/components/bookshelf/chat-view";
+import Header from "../../components/Header";
+import ChatUI from "../../components/ChatUI";
 
-export default async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) redirect("/auth/login");
+export default async function Chat({
+    params,
+    searchParams,
+}: {
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ ids?: string }>;
+}) {
+    const { id: chatId } = await params;
+    const { ids: idsParam } = (await searchParams) ?? {};
+    const docIds = typeof idsParam === "string" && idsParam.length > 0 ? idsParam.split(",") : [chatId];
 
-  const { data: chat } = await supabase
-    .from("chats")
-    .select("id,name,file_name,file_size,file_type,file_path")
-    .eq("id", id)
-    .eq("user_id", auth.user.id)
-    .single();
-  if (!chat) redirect("/");
-
-  const { data: messages } = await supabase
-    .from("messages")
-    .select("id,role,content,created_at")
-    .eq("chat_id", id)
-    .order("created_at", { ascending: true });
-
-  return (
-    <main className="mx-auto max-w-3xl p-6 flex flex-col gap-4">
-      <h1 className="font-semibold text-xl">{chat.name}</h1>
-      <ChatView chatId={id} initialMessages={messages ?? []} />
-    </main>
-  );
+    return (
+        <main className="flex flex-col min-h-screen">
+            <Header />
+            <ChatUI chatId={chatId} docIds={docIds} />
+        </main>
+    )
 }

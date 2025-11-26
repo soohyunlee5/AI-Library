@@ -16,10 +16,12 @@ create table if not exists public.chats (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   name text not null,
+  author text,
   file_name text not null,
   file_size bigint not null,
   file_type text not null,
   file_path text, -- path in storage bucket `books`
+  position double precision not null default extract(epoch from now()), -- higher = nearer the top of the shelf
   created_at timestamptz not null default now()
 );
 
@@ -33,6 +35,7 @@ create table if not exists public.messages (
 
 -- Helpful indexes
 create index if not exists chats_user_id_created_at_idx on public.chats(user_id, created_at desc);
+create index if not exists chats_user_id_position_idx on public.chats(user_id, position asc);
 create index if not exists messages_chat_id_created_at_idx on public.messages(chat_id, created_at asc);
 
 -- Row Level Security
@@ -42,6 +45,7 @@ alter table public.messages enable row level security;
 -- Policies: users can manipulate only their own data
 create policy if not exists "chats_select_own" on public.chats for select using (auth.uid() = user_id);
 create policy if not exists "chats_modify_own" on public.chats for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy if not exists "chats_delete_own" on public.chats for delete using (auth.uid() = user_id);
 
 create policy if not exists "messages_select_own" on public.messages for select using (
   exists (select 1 from public.chats c where c.id = chat_id and c.user_id = auth.uid())
@@ -87,13 +91,13 @@ insert into public.messages (chat_id, role, content) values
   ('<CHAT_ID>', 'user', 'Summarize this PDF');
 
 API Contract (as implemented)
-- GET /api/v1/chats → [{ id, name, created_at, file_name, file_size }]
+- GET /api/v1/chats → [{ id, name, author, created_at, file_name, file_size, position }]
 - GET /api/v1/getHistory/:id → { chat, history: Message[] }
 - POST /api/v1/createChat (multipart/form-data: file, name) → { id }
 - POST /api/v1/updateChat/:id ({ message }) → { assistant: Message }
+- PATCH /api/v1/chats/order ({ ids: string[] }) → 204
 
 Notes
 - The “assistant” reply is a dummy echo referencing the uploaded file metadata.
 - Files are uploaded to `books/{user_id}/{chat_id}.pdf`.
 - This demo assumes RLS policies above are in place.
-

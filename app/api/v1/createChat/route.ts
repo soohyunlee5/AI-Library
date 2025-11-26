@@ -12,12 +12,19 @@ export async function POST(request: Request) {
   const name = String(form.get("name") || "Untitled Chat");
   if (!(file instanceof File)) return new Response("file is required", { status: 400 });
   if (file.type !== "application/pdf") return new Response("Only PDF accepted", { status: 400 });
-  if (file.size > 10 * 1024 * 1024) return new Response("Max file size is 10MB", { status: 400 });
+  if (file.size > 50 * 1024 * 1024) return new Response("Max file size is 50MB", { status: 400 });
 
   // create chat row first to get id
   const { data: chatRow, error: chatErr } = await supabase
     .from("chats")
-    .insert({ user_id: auth.user.id, name, file_name: file.name, file_size: file.size, file_type: file.type })
+    .insert({
+      user_id: auth.user.id,
+      name,
+      file_name: file.name,
+      file_size: file.size,
+      file_type: file.type,
+      position: Date.now()
+    })
     .select("id")
     .single();
   if (chatErr || !chatRow) return new Response(chatErr?.message || "Insert failed", { status: 500 });
@@ -29,7 +36,7 @@ export async function POST(request: Request) {
   await supabase.from("chats").update({ file_path: path }).eq("id", chatRow.id);
 
   // seed a system/assistant welcome message
-  const welcome = `New chat created for \"${file.name}\". Ask anything about this PDF!`;
+  const welcome = `New chat created for \"${file.name}\". Ask anything about this book!`;
   await supabase.from("messages").insert({ chat_id: chatRow.id, role: "assistant", content: welcome });
 
   return Response.json({ id: chatRow.id });

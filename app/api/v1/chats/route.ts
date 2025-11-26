@@ -7,10 +7,10 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("chats")
-    .select("id,name,created_at,file_name,file_size")
+    .select("id,name,author,created_at,file_name,file_size,position")
     .eq("user_id", auth.user.id)
-    .order("created_at", { ascending: false });
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: true });
   if (error) return new Response(error.message, { status: 500 });
   return Response.json(data ?? []);
 }
-
