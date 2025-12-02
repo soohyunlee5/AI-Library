@@ -6,6 +6,9 @@ AI Library (AI Bookshelf) - upload a PDF "book", chat about it, and organize you
 
 Users need a simple way to ask questions about their own documents and keep conversations organized. Most tooling is either too complex or doesn't prioritize an intuitive, bookshelf-like UI for per-document chats.
 
+## System Design Sketch
+<img width="1791" height="706" alt="image" src="https://github.com/user-attachments/assets/478db970-dc83-48b3-ad35-e99513ce0b91" />
+
 ## MVP scope
 
 - Auth: email/password via Supabase (cookie-based with `@supabase/ssr`).
