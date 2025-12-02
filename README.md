@@ -6,9 +6,6 @@ AI Library (AI Bookshelf) - upload a PDF "book", chat about it, and organize you
 
 Users need a simple way to ask questions about their own documents and keep conversations organized. Most tooling is either too complex or doesn't prioritize an intuitive, bookshelf-like UI for per-document chats.
 
-## System Design Sketch
-<img width="1791" height="706" alt="image" src="https://github.com/user-attachments/assets/478db970-dc83-48b3-ad35-e99513ce0b91" />
-
 ## MVP scope
 
 - Auth: email/password via Supabase (cookie-based with `@supabase/ssr`).
@@ -18,7 +15,13 @@ Users need a simple way to ask questions about their own documents and keep conv
 - Rename chat (title and optional author), delete chat (removes storage file if present).
 - View full message history per chat.
 
-## Frontend
+## System Design Sketch
+<img width="1791" height="706" alt="image" src="https://github.com/user-attachments/assets/478db970-dc83-48b3-ad35-e99513ce0b91" />
+
+## Frontend UI Sketch 
+<img width="1024" height="768" alt="Frontend Sketch" src="https://github.com/user-attachments/assets/fb52fd88-9e33-4cb1-9f44-7419fc833b04" />
+
+## Frontend Codebase
 
 - Framework and routing
   - Next.js App Router in `app/` with a mix of Server and Client Components.
@@ -39,7 +42,7 @@ Users need a simple way to ask questions about their own documents and keep conv
 - Chat UI
   - `app/components/ChatUI.tsx`: Loads history (`GET /api/v1/getHistory/:id`), sends messages (`POST /api/v1/updateChat/:id`), auto-resizes textarea, and renders user/assistant bubbles.
 
-## Backend
+## Backend Codebase
 
 - Auth/session middleware
   - `middleware.ts` calls `lib/supabase/middleware.ts:updateSession` to synchronize Supabase sessions via cookies and redirect unauthenticated users away from protected pages.
