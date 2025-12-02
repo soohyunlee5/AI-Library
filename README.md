@@ -1,6 +1,9 @@
 # README
 
-AI Library (AI Bookshelf) - upload a PDF "book", chat about it, and organize your chats on a visual shelf. Built with Next.js App Router, Supabase Auth/Storage, Tailwind, and shadcn/ui.
+LibraryAI turns scattered lecture PDFs, research papers, and work documents into an organized, AI supported visual shelf.
+Upload, explore, and keep context across your entire library.
+_
+Built with Next.js App Router, Supabase Auth and Storage, Tailwind, and shadcn/ui._
 
 <img width="1920" height="1080" alt="Frontend Pic 1" src="https://github.com/user-attachments/assets/507bf4eb-e6b0-4243-a00c-81df93d8ad72" />
 
