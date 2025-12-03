@@ -8,7 +8,8 @@ Built with Next.js App Router, Supabase Auth and Storage, Tailwind, TypeScriptt,
 
 <img width="1920" height="1080" alt="Frontend Pic 1" src="https://github.com/user-attachments/assets/507bf4eb-e6b0-4243-a00c-81df93d8ad72" />
 
-<img width="1921" height="1080" alt="Frontend Pic 2" src="https://github.com/user-attachments/assets/bfb268d4-656f-45b3-8545-d5717962027d" />
+<img width="1920" height="1080" alt="Chat Example 1" src="https://github.com/user-attachments/assets/2a6539fd-3633-4e56-8517-51cf14fac495" />
+
 
 ## Problem
 
